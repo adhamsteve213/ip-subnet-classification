@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Subnet Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; max-width: 780px; }
+        h1 { margin-bottom: 0.4rem; }
+        form { display: flex; gap: 0.6rem; margin-top: 1rem; }
+        input[type="text"] { flex: 1; padding: 0.45rem; }
+        button { padding: 0.45rem 0.9rem; }
+        .error { color: #b00020; margin-top: 1rem; }
+        table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+        td, th { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+        th { background: #f3f3f3; width: 35%; }
+    </style>
+</head>
+<body>
+    <h1>IP Subnet Calculator</h1>
+    <p>Enter an IPv4 or IPv6 CIDR block (example: 192.168.1.14/24).</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.cidr }}
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if form.cidr.errors %}
+        <p class="error">{{ form.cidr.errors|striptags }}</p>
+    {% endif %}
+
+    {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+    {% endif %}
+
+    {% if result %}
+        <table>
+            <tr><th>Input</th><td>{{ result.input_cidr }}</td></tr>
+            <tr><th>IP version</th><td>IPv{{ result.version }}</td></tr>
+            <tr><th>Network</th><td>{{ result.network }}/{{ result.prefix_length }}</td></tr>
+            <tr><th>Netmask</th><td>{{ result.netmask }}</td></tr>
+            <tr><th>Wildcard mask</th><td>{{ result.wildcard_mask }}</td></tr>
+            <tr><th>Broadcast</th><td>{{ result.broadcast_address|default:"N/A" }}</td></tr>
+            <tr><th>First host</th><td>{{ result.first_host }}</td></tr>
+            <tr><th>Last host</th><td>{{ result.last_host }}</td></tr>
+            <tr><th>Total addresses</th><td>{{ result.total_addresses }}</td></tr>
+            <tr><th>Usable hosts</th><td>{{ result.usable_hosts }}</td></tr>
+        </table>
+    {% endif %}
+</body>
+</html>
+
